@@ -1,0 +1,55 @@
+
+local request= http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
+local deviceType = game:GetService("UserInputService"):GetPlatform() == Enum.Platform.Windows and "💻" or "📱"
+local exe = identifyexecutor() 
+local player = game.Players.LocalPlayer
+local job = tostring(game.JobId)
+local gameId = game.PlaceId
+local plyID = player.UserId
+local teleportStatement = "game:GetService('TeleportService'):TeleportToPlaceInstance(" .. gameId .. ", '" .. job .. "', player)"
+local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+
+local currentTime = os.date("%Y-%m-%d %H:%M:%S") 
+
+local response = request({
+    Url = Webhook,
+    Method = "POST",
+    Headers = {
+        ["Content-Type"] = "application/json"
+    },
+    Body = game:GetService("HttpService"):JSONEncode({
+        content = "",
+        embeds = {
+            {
+                title = "#Private NON Whitelisted Logs ({Faggot})",
+                description = "User Device: ".. deviceType,
+                type = "rich",
+                color = Color,
+                thumbnail = {
+                    url = ThumbnailUrl
+                },
+                fields = {              
+                    {
+                        name = "--------------------------------------------------------------------------------------------------information",
+                        value = " Username:\n〘👤〙**Username**: [" .. player.Name .. "](https://www.roblox.com/users/" .. player.UserId .. "/profile)\n〘🎲〙**Player ID:** " .. plyID .. "\n\n𝐆𝐚𝐦𝐞𝐬:\n〘🎮〙**Game**: [" .. gameName .. "](https://www.roblox.com/games/" .. gameId .. ")\n〘🎲〙Game ID: " .. gameId .. "\n\n 𝐌𝐢𝐬𝐜:\n〘🔧〙**Executor**: " .. exe .. "\n **HWID:**: " .. game:GetService("RbxAnalyticsService"):GetClientId() .."\n\n Script ran at: \n ".. currentTime,
+                        inline = true
+                    },
+                    {
+                        name = FieldTitle,
+                        value = FieldText,
+                        inline = true
+                    },
+                    {
+                        name = "JobIDJOIN",
+                        value = "```lua\n" .. teleportStatement .. "```",
+                        inline = true
+                    }
+                },
+                footer = {
+                    text = FooterText,
+                    icon_url = FooterUrl
+                }
+            }
+        }
+    })
+})    
